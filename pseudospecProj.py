@@ -8,7 +8,7 @@ def pseudospecProj(A, phi, eps = 1e-10, real_min = -50, real_max = 50,
                    imag_n = 101, pushaway = 100):
     P, commutatorNorm, commutator = proj.projectionCommute(A, phi, eps)
     IP = np.identity(A.shape[0])-P
-    PA = np.matmul(P, A)-100*np.abs(real_min)*pushaway*IP
+    PA = np.matmul(P, A)-np.abs(real_min)*pushaway*IP
     pseudo = ps.NonnormalMeshgrid(PA, real_min = real_min,
                     real_max = real_max, real_n = real_n,
                     imag_min = imag_min, imag_max = imag_max,
