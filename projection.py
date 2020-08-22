@@ -63,7 +63,7 @@ def projectionCommute(A, phi, eps = 1e-10):
                   str(commutatorNorm)+".")
             commutator = np.matmul(P, A) - np.matmul(A, P)
             return P, commutatorNorm, commutator
-    if i == n or j == n or (fwdDoesntMatter and bwdDoesntMatter):
+    if i == n or j == n:
         print("No non-trivial subspaces found containing vector of interest.")
         return np.identity(n), 0., np.zeros([n, n])
     commutator = np.matmul(P, A) - np.matmul(A, P)
