@@ -3,7 +3,7 @@ import scipy.stats
 
 np.random.seed(1)
 
-def projectionCommute(A, phi, eps = 1e-10):
+def projectionCommute(A, phi, eps = 1e-10, eps_phi = 1e-10):
     """"This is my attempt to code up the algorithm for finding a projection that includes phi in its
     image and which commutes with A.  A is a n*n matrix, and phi is an n-dimensional vector, eps
     is the required tolerance on the commutator, which tells you whether A and P approximately commute."""
@@ -27,7 +27,7 @@ def projectionCommute(A, phi, eps = 1e-10):
         if not bwdDoesntMatter:
             phiItBack = np.matmul(Amoorepenrose, phiItBack)
             normPhi = np.linalg.norm(phiItBack)
-            if normPhi < 1e-10:
+            if normPhi < eps_phi:
                 bwdDoesntMatter = True
             else:
                 phiItBack = phiItBack/normPhi
@@ -48,7 +48,7 @@ def projectionCommute(A, phi, eps = 1e-10):
             phiItFwd = phiItFwd/np.linalg.norm(phiItFwd)
             phiItFwd = phiItFwd-np.matmul(P, phiItFwd)
             normPhi = np.linalg.norm(phiItFwd, 2)
-            if normPhi < 1e-10: ## Forward direction is now entirely within im(P)
+            if normPhi < eps_phi: ## Forward direction is now entirely within im(P)
                 fwdDoesntMatter = True
             else:
                 phiItFwd = phiItFwd/normPhi

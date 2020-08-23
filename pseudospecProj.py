@@ -3,12 +3,13 @@ import pseudopy as ps
 import numpy as np
 from matplotlib import pyplot
 
-def pseudospecProj(A, phi, eps = 1e-10, real_min = -50, real_max = 50,
+def pseudospecProj(A, phi, eps = 1e-10, eps_phi = 1e-10,
+                   real_min = -50, real_max = 50,
                    real_n = 101, imag_min = -25, imag_max = 25,
                    imag_n = 101, pushaway = 100):
-    P, commutatorNorm, commutator = proj.projectionCommute(A, phi, eps)
+    P, commutatorNorm, commutator = proj.projectionCommute(A, phi, eps, eps_phi)
     IP = np.identity(A.shape[0])-P
-    PA = np.matmul(P, A)-np.abs(real_min)*pushaway*IP
+    PA = np.matmul(P, A)-10j*np.abs(imag_min)*pushaway*IP
     pseudo = ps.NonnormalMeshgrid(PA, real_min = real_min,
                     real_max = real_max, real_n = real_n,
                     imag_min = imag_min, imag_max = imag_max,
@@ -1380,14 +1381,16 @@ def defaultPlotPseudospec(pseudoMeshgrid, real_min = -50, real_max = 50,
 #
 # phi = np.zeros((63, 1))
 #
-# # phi[34, 0] = 1 ## ATP_c
+# phi[34, 0] = 1 ## ATP_c
 # phi[1, 0] = 1 ## dPsi
 #
-# grid, P = pseudospecProj(A, phi = phi, eps = 1e-10,
+# grid, P = pseudospecProj(A, phi = phi, eps = 1e-10, eps_phi = 1e-24,
 #                       real_min = -2500000, real_max = 1500000,
-#                       real_n = 151, imag_min = -1500000,
-#                       imag_max = 1500000, imag_n = 151,
+#                       real_n = 101, imag_min = -1500000,
+#                       imag_max = 1500000, imag_n = 101,
 #                       pushaway = 10)
+#
+# print("The rank of the projection found is: "+str(np.trace(P).round())+".")
 #
 # defaultPlotPseudospec(grid, -2500000, 1500000, -1500000, 1500000)
 
