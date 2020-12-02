@@ -9,6 +9,7 @@ def projectSchur(A, phi, tol = 0.9):
     T, Z = sci.schur(A)
     Zt = Z.transpose()
     n = len(Zt)
+    phi = phi/np.linalg.norm(phi)
     similarity = [0 for i in range(n)]
     for i in range(n):
         possPhi = Zt[i]
@@ -24,16 +25,20 @@ def projectSchur(A, phi, tol = 0.9):
     Zvaluable = np.array(Zvaluable)
     if len(Zvaluable) == n:
         print("No non-trivial choices found with Schur decomposition.")
-        return np.identity(n), A
+        return A
     else:
-        P = np.zeros([n, n])
-        for i in range(len(Zvaluable)):
-            P = P + np.outer(Zvaluable[i], Zvaluable[i])
-        PA = np.matmul(P, A)
-        return P, PA
+        PAt = np.zeros([n, n])
+        At = np.transpose(A)
+        m = len(Zvaluable)
+        for i in range(n):
+            for j in range(m):
+                PAt[i] = PAt[i] + np.inner(Zvaluable[j], At[i])*Zvaluable[j]
+        PA = PAt.transpose()
+        return PA, m
 
 if __name__ == "__main__":
     A = np.array([[1, 2, 3], [4, 1, 0], [5, -1, 90]])
     phi = [0, 0, 1]
-    P, PA = projectSchur(A, phi)
+    PA, m = projectSchur(A, phi)
     print(PA)
+    print(m)
