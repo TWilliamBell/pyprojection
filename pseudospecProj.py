@@ -1,13 +1,13 @@
-import projection as proj
+import backwardinvariat as bkwdinv
 import pseudopy as ps
 import numpy as np
 from matplotlib import pyplot
 
-def pseudospecProj(A, phi, eps = 1e-10, eps_phi = 1e-10,
+def pseudospecProj(A, phi, diff = 1e-3,
                    real_min = -50, real_max = 50,
                    real_n = 101, imag_min = -25, imag_max = 25,
                    imag_n = 101, pushaway = 100):
-    P, commutatorNorm, commutator = proj.projectionCommute(A, phi, eps, eps_phi)
+    P, commutatorNorm, basis = bkwdinv.backwardInvariantProjection(A, phi, diff)
     IP = np.identity(A.shape[0])-P
     PA = np.matmul(P, A)-10j*np.abs(imag_min)*pushaway*IP
     pseudo = ps.NonnormalMeshgrid(PA, real_min = real_min,
@@ -25,26 +25,27 @@ def defaultPlotPseudospec(pseudoMeshgrid, real_min = -50, real_max = 50,
     pyplot.ylabel("Imaginary Part")
     pyplot.show()
 
-# import scipy.stats as sci
-# np.random.seed(100)
-# A = np.array([[-2, 0, 0, 0, 0],
-#               [0, -2, 1, 0, 0],
-#               [0, -1, -2, 0, 0],
-#               [0, 0, 0, -1, 1],
-#               [0, 0, 0, 0, -1]])
-#
-# Q = np.array(sci.unitary_group.rvs(5))
-# Qt = Q.transpose()
-# B = np.matmul(Qt, np.matmul(A, Q))
-#
-# pseudo, P = pseudospecProj(B, phi = np.array([0, 0, 0, 1, 0]),
-#                         real_min = -5, real_max = 5, imag_min = -5,
-#                         imag_max = 5)
-#
-# print(P)
-#
-# defaultPlotPseudospec(pseudo, real_min = -5, real_max = 5, imag_min = -5,
-#                       imag_max = 5)
+if __name__ == "__main__":
+    import scipy.stats as sci
+    np.random.seed(100)
+    A = np.array([[-2, 0, 0, 0, 0],
+              [0, -2, 1, 0, 0],
+              [0, -1, -2, 0, 0],
+              [0, 0, 0, -1, 1],
+              [0, 0, 0, 0, -1]])
+
+    Q = np.array(sci.unitary_group.rvs(5))
+    Qt = Q.transpose()
+    B = np.matmul(Qt, np.matmul(A, Q))
+
+    pseudo, P = pseudospecProj(B, phi = np.array([0, 0, 0, 1, 0]),
+                        real_min = -5, real_max = 5, imag_min = -5,
+                        imag_max = 5)
+
+    print(P)
+
+    defaultPlotPseudospec(pseudo, real_min = -5, real_max = 5, imag_min = -5,
+                      imag_max = 5)
 #
 # pseudo, P = pseudospecProj(A, phi = np.array([0, 0, 1, 0, 0]),
 #                         real_min = -5, real_max = 5, imag_min = -5,
